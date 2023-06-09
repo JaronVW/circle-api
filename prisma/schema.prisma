@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Message {
+  MessageID Int    @default(autoincrement()) @id
+  Message   String @db.VarChar
+  UserID    Int
+  StreamID  String @db.VarChar
+  Stream    Stream @relation(fields: [StreamID], references: [StreamID], onDelete: NoAction, onUpdate: NoAction, map: "FK_StreamID")
+  User      User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+
+}
+
+model Stream {
+  StreamID String    @id @db.VarChar @default(cuid())
+  UserID   Int
+  Message  Message[] @ignore
+  User     User      @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+
+  @@index([UserID], map: "fki_FK_UserID")
+}
+
+model User {
+  UserID      Int       @id @default(autoincrement())
+  FirstName   String    @db.VarChar
+  Infix       String?   @db.VarChar
+  LastName    String    @db.VarChar
+  Email       String    @db.VarChar
+  Password    String    @db.VarChar
+  SSN         String    @db.VarChar
+  PhoneNumber String    @db.VarChar
+  Address     String    @db.VarChar
+  PostalCode  String    @db.VarChar
+  Birthdate   DateTime  @db.Date
+  Country     String    @db.VarChar
+  Message     Message[] @ignore
+  Stream      Stream[]
+}

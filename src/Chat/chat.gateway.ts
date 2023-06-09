@@ -2,17 +2,32 @@ import {
   WebSocketGateway,
   MessageBody,
   SubscribeMessage,
+  WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
-
-const uniqueStreamerId = 'b890b91f-2dee-4930-85ec-90235a47be9b';
-
-const chatMessages = [];
+import { ChatService } from './chat.service';
+import { Server, Socket } from 'socket.io';
+import { AuthUser } from 'src/auth.decorator';
+import { JWTDecodedUser } from 'src/jwt.decoded.user';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
-  @SubscribeMessage(`event`)
-  handleEvent(@MessageBody() data: string): string {
-    chatMessages.push(data);
-    return data;
+  constructor(private service: ChatService) {}
+
+  @SubscribeMessage('chat')
+  async joinStream(
+    @MessageBody() streamId: string,
+    @ConnectedSocket() socket: Socket,
+    @AuthUser() user: JWTDecodedUser,
+  ) {
+    socket.join(streamId);
+    socket.on(streamId, (message) => {
+      socket.to(streamId).emit(streamId, message);
+      this.service.PostMessage({
+        message: message,
+        userId: user.userId,
+        streamId: streamId,
+      });
+    });
   }
 }
