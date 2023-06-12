@@ -13,6 +13,7 @@ import * as child from 'child_process';
 import { UseGuards } from '@nestjs/common';
 import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { MessageDto } from './message.dto';
+import { WsGuard } from 'src/auth/ws.guard';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
@@ -21,14 +22,12 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  @UseGuards()
+  @UseGuards(WsGuard)
   @SubscribeMessage('chat')
   async joinStream(
     @MessageBody() streamId: string,
     @ConnectedSocket() socket: Socket,
-    @AuthUser() user: JWTDecodedUser,
   ) {
-    // console.log('joinStream', streamId);
     socket.join(streamId);
     socket.on(streamId, (message: MessageDto) => {
       console.log('message', message);
