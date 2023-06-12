@@ -34,24 +34,12 @@ export class ChatGateway {
   @SubscribeMessage('data')
   async getData(@MessageBody() data: string) {
     const ffmpeg = child.spawn('ffmpeg', [
-      '-f',
-      'lavfi',
-      '-i',
-      'anullsrc',
-      '-i',
-      '-',
-      '-c:v',
-      'libx264',
-      '-preset',
-      'veryfast',
-      '-tune',
-      'zerolatency',
-      '-c:a',
-      'aac',
-      '-f',
-      'flv',
-      `rtmp://127.0.0.1:1935/live/key`,
+      'ffmpeg -re -i _ -c:v libx264 -preset veryfast -tune zerolatency -c:a aac -ar 44100 -f flv rtmp://localhost/live/STREAM_NAME',
     ]);
+
+    ffmpeg.stderr.on('data', (data) => {
+      console.log('FFmpeg STDERR:', data.toString());
+    });
     console.log(data);
     ffmpeg.stdin.write(data);
   }

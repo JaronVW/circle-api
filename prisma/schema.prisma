@@ -8,20 +8,17 @@ datasource db {
 }
 
 model Message {
-  MessageID Int    @default(autoincrement()) @id
+  MessageID Int    @id @default(autoincrement())
   Message   String @db.VarChar
   UserID    Int
   StreamID  String @db.VarChar
-  Stream    Stream @relation(fields: [StreamID], references: [StreamID], onDelete: NoAction, onUpdate: NoAction, map: "FK_StreamID")
   User      User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
-
 }
 
 model Stream {
-  StreamID String    @id @db.VarChar @default(cuid())
+  StreamID String @id @default(cuid()) @db.VarChar
   UserID   Int
-  Message  Message[] @ignore
-  User     User      @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  User     User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 
   @@index([UserID], map: "fki_FK_UserID")
 }
@@ -39,6 +36,6 @@ model User {
   PostalCode  String    @db.VarChar
   Birthdate   DateTime  @db.Date
   Country     String    @db.VarChar
-  Message     Message[] @ignore
   Stream      Stream[]
+  Message     Message[]
 }
