@@ -5,9 +5,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ChatModule } from './Chat/chat.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [AuthModule, UsersModule, ChatModule],
+  imports: [AuthModule, UsersModule, ChatModule, ConfigModule.forRoot()],
   controllers: [AppController],
   providers: [AppService],
 })

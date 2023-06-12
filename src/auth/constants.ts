@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 export const jwtConstants = {
   secret:
-    'DO NOT USE THIS VALUE. INSTEAD, CREATE A COMPLEX SECRET AND KEEP IT SAFE OUTSIDE OF THE SOURCE CODE.',
+    process.env.SECRET_KEY || 'secretKey',
 };
 //WARNING
 //Do not expose this key publicly. We have done so here to make it
