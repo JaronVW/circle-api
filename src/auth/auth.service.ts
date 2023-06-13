@@ -20,7 +20,7 @@ export class AuthService {
   // exposing user passwords in plain text.
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(username);
-
+    console.log(user);
     const res = await bcrypt.compare(pass, user.Password);
 
     if (res) {
@@ -32,8 +32,12 @@ export class AuthService {
   }
 
   async login(user: any) {
-    console.log(user);
-    const payload = { username: user.Email, sub: user.UserID };
+    const payload = {
+      username: user.Email,
+      sub: user.UserID,
+      // check if user contains Stream object and add boolean to payload
+      stream: user.Stream ? user.Stream.StreamID : false,
+    };
     return {
       access_token: this.jwtService.sign(payload),
     };

@@ -17,25 +17,26 @@ model Message {
 
 model Stream {
   StreamID String @id @default(cuid()) @db.VarChar
-  UserID   Int
+  UserID   Int    @unique
   User     User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 
   @@index([UserID], map: "fki_FK_UserID")
 }
 
 model User {
-  UserID      Int       @id @default(autoincrement())
-  FirstName   String    @db.VarChar
-  Infix       String?   @db.VarChar
-  LastName    String    @db.VarChar
-  Email       String    @db.VarChar @unique
-  Password    String    @db.VarChar
-  SSN         String    @db.VarChar
-  PhoneNumber String    @db.VarChar
-  Address     String    @db.VarChar
-  PostalCode  String    @db.VarChar
-  Birthdate   DateTime  @db.Date
-  Country     String    @db.VarChar
-  Stream      Stream[]
-  Message     Message[]
+  UserID      Int      @id @default(autoincrement())
+  FirstName   String   @db.VarChar
+  Infix       String?  @db.VarChar
+  LastName    String   @db.VarChar
+  Email       String   @unique @db.VarChar
+  Password    String   @db.VarChar
+  SSN         String   @db.VarChar
+  PhoneNumber String   @db.VarChar
+  Address     String   @db.VarChar
+  PostalCode  String   @db.VarChar
+  Birthdate   DateTime @db.Date
+  Country     String   @db.VarChar
+  Stream      Stream?
+
+  Message Message[]
 }

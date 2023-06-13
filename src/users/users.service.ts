@@ -22,9 +22,16 @@ export class UsersService {
   ];
 
   async findOne(username: string): Promise<User | undefined> {
-    return this.service.user.findUnique({
+    return this.service.user.findFirst({
       where: {
         Email: username,
+      },
+      include: {
+        Stream: {
+          select: {
+            StreamID: true,
+          },
+        },
       },
     });
   }
