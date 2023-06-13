@@ -9,6 +9,7 @@ export class NpmserverController {
   async getEndpoint(): Promise<any> {
     try {
       const data = await this.npmserverService.fetchData();
+      return data;
     } catch (error) {
       console.error('Error fetching data: ', error);
       return { errpr: 'Failed to fetch data' }
