@@ -10,37 +10,36 @@ import { Server, Socket } from 'socket.io';
 import { AuthUser } from 'src/auth.decorator';
 import { JWTDecodedUser } from 'src/jwt.decoded.user';
 import * as child from 'child_process';
+import { UseGuards } from '@nestjs/common';
+import { LocalAuthGuard } from 'src/auth/local-auth.guard';
+import { MessageDto } from './message.dto';
+import { WsGuard } from 'src/auth/ws.guard';
+
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
   constructor(private service: ChatService) {}
 
+  @WebSocketServer()
+  server: Server;
+
+  @UseGuards(WsGuard)
   @SubscribeMessage('chat')
   async joinStream(
     @MessageBody() streamId: string,
     @ConnectedSocket() socket: Socket,
-    @AuthUser() user: JWTDecodedUser,
   ) {
     socket.join(streamId);
-    socket.on(streamId, (message) => {
-      socket.to(streamId).emit(streamId, message);
-      this.service.PostMessage({
-        message: message,
-        userId: user.userId,
-        streamId: streamId,
-      });
-    });
-  }
+    socket.on(streamId, (message: MessageDto) => {
+      console.log('message', message);
+      message.datetime = new Date();
+      this.server.to(streamId).emit(streamId, message);
 
-  @SubscribeMessage('data')
-  async getData(@MessageBody() data: string) {
-    const ffmpeg = child.spawn('ffmpeg', [
-      'ffmpeg -re -i _ -c:v libx264 -preset veryfast -tune zerolatency -c:a aac -ar 44100 -f flv rtmp://localhost/live/STREAM_NAME',
-    ]);
-
-    ffmpeg.stderr.on('data', (data) => {
-      console.log('FFmpeg STDERR:', data.toString());
+      // return message;
+      // this.service.PostMessage({
+      //   message: message,
+      //   userId: user.userId,
+      //   streamId: streamId,
+      // });
     });
-    console.log(data);
-    ffmpeg.stdin.write(data);
   }
 }

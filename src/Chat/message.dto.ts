@@ -1,5 +1,8 @@
+import { IsOptional } from 'class-validator';
+
 export class MessageDto {
   message: string;
-  userId: number;
-  streamId: string;
+  fullName: string;
+
+  datetime = new Date();
 }
