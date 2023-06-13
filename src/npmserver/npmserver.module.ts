@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios/dist';
+import { HttpModule } from '@nestjs/axios';
 import { NpmserverService } from './npmserver.service';
 import { NpmserverController } from './npmserver.controller';
 
