@@ -8,10 +8,10 @@ datasource db {
 }
 
 model Message {
-  MessageID Int    @id @default(autoincrement())
   Message   String @db.VarChar
-  UserID    Int
+  MessageID Int    @id @default(autoincrement())
   StreamID  String @db.VarChar
+  UserID    Int
   User      User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 }
 
@@ -28,7 +28,7 @@ model User {
   FirstName   String    @db.VarChar
   Infix       String?   @db.VarChar
   LastName    String    @db.VarChar
-  Email       String    @db.VarChar @unique
+  Email       String    @unique @db.VarChar
   Password    String    @db.VarChar
   SSN         String    @db.VarChar
   PhoneNumber String    @db.VarChar
@@ -36,6 +36,14 @@ model User {
   PostalCode  String    @db.VarChar
   Birthdate   DateTime  @db.Date
   Country     String    @db.VarChar
-  Stream      Stream[]
+  Log         Log[]
   Message     Message[]
+  Stream      Stream[]
+}
+
+model Log {
+  LogID   Int    @id @default(autoincrement())
+  UserID  Int
+  LogText String @db.VarChar
+  User    User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 }

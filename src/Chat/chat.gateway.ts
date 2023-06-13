@@ -33,6 +33,7 @@ export class ChatGateway {
       console.log('message', message);
       message.datetime = new Date();
       this.server.to(streamId).emit(streamId, message);
+
       // return message;
       // this.service.PostMessage({
       //   message: message,
