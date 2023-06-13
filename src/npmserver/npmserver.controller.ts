@@ -12,7 +12,7 @@ export class NpmserverController {
       return data;
     } catch (error) {
       console.error('Error fetching data: ', error);
-      return { errpr: 'Failed to fetch data' }
+      return { error: 'Failed to fetch data' }
     }
   }
 }

@@ -9,10 +9,11 @@ import { NpmserverService } from './npmserver/npmserver.service';
 import { NpmserverModule } from './npmserver/npmserver.module';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
+import { LogsModule } from './logstable/logs.module';
 
 
 @Module({
-  imports: [AuthModule, UsersModule, ChatModule, NpmserverModule, HttpModule, ConfigModule.forRoot()],
+  imports: [AuthModule, UsersModule, ChatModule, NpmserverModule, HttpModule, ConfigModule.forRoot(), LogsModule],
   controllers: [AppController],
   providers: [AppService, NpmserverService],
 })
