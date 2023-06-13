@@ -28,7 +28,7 @@ model User {
   FirstName   String    @db.VarChar
   Infix       String?   @db.VarChar
   LastName    String    @db.VarChar
-  Email       String    @db.VarChar
+  Email       String    @db.VarChar @unique
   Password    String    @db.VarChar
   SSN         String    @db.VarChar
   PhoneNumber String    @db.VarChar
