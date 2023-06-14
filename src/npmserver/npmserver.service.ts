@@ -10,17 +10,30 @@ export class NpmserverService {
     private readonly prismaService: PrismaService,
   ) {}
 
+  async getStreamersDataFeed(live: string[]): Promise<any> {
+    return await this.prismaService.user.findMany({
+      select: {
+        Stream: {
+          select: {
+            StreamerID: true,
+          },
+        },
+        FirstName: true,
+        LastName: true,
+        Infix: true,
+      },
+      where: {
+        Stream: {
+          StreamerID: {
+            in: live,
+          },
+        },
+      },
+    });
+  }
+
   async fetchData(): Promise<any> {
     const response = await axios.get('http://127.0.0.1:9997/v2/paths/list');
     return response.data;
   }
-
-  // async getUsers(): Promise<any> {}
-
-  // async login(user: any) {
-  //     const payload = { username: user.username, sub: user.userId };
-  //     return {
-  //       access_token: this.jwtService.sign(payload),
-  //     };
-  //   }
 }

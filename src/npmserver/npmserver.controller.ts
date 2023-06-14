@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { NpmserverService } from './npmserver.service';
 
 @Controller('npmserver')
@@ -9,8 +9,9 @@ export class NpmserverController {
   async getEndpoint(): Promise<any> {
     try {
       const data = await this.npmserverService.fetchData();
-
-      return data.items.map((item) => item.name);
+      return await this.npmserverService.getStreamersDataFeed(
+        data.items.map((item) => item.name),
+      );
     } catch (error) {
       console.error('Error fetching data: ', error);
       return { errpr: 'Failed to fetch data' };
