@@ -5,9 +5,6 @@ import { MessageDto } from './message.dto';
 
 @Injectable()
 export class ChatService {
-  /**
-   *
-   */
   constructor(private prisma: PrismaService) {}
 
   PostMessage(message: MessageDto) {

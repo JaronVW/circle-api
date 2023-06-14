@@ -10,24 +10,14 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // Of course in a real application, you wouldn't
-  // store a password in plain text. You'd instead
-  // use a library like bcrypt, with a salted
-  // one-way hash algorithm. With that approach,
-  // you'd only store hashed passwords, and then
-  // compare the stored password to a hashed version
-  // of the incoming password, thus never storing or
-  // exposing user passwords in plain text.
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findOne(username);
     console.log(user);
     const res = await bcrypt.compare(pass, user.Password);
-
     if (res) {
       const { Password, ...result } = user;
       return result;
     }
-
     return null;
   }
 
@@ -45,7 +35,6 @@ export class AuthService {
     const payload = {
       username: user.Email,
       sub: user.UserID,
-      // check if user contains Stream object and add boolean to payload
       stream: user.Stream ? user.Stream.StreamID : false,
     };
     return {
