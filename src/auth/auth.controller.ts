@@ -12,10 +12,10 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req: any) {
-    const userId = req.user.UserID
+    const userId = req.user.UserID;
     this.logService.createLog({
       UserID: userId,
-      LogText: "User " + userId + " logged in on " + DateTime.now().toLocaleString(DateTime.DATE_FULL)
+      LogText: "User " + userId + " logged in on " + new Date().toLocaleString()
     });
     return this.authService.login(req.user);
   }
@@ -26,7 +26,7 @@ export class AuthController {
     const userId = req.user.UserID
     this.logService.createLog({
       UserID: userId,
-      LogText: "User " + userId + " requested profile on " + DateTime.now().toLocaleString(DateTime.DATE_FULL)
+      LogText: "User " + userId + " requested profile on " + new Date().toLocaleString()
     });
     return req.user;
   }

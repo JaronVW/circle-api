@@ -8,17 +8,17 @@ datasource db {
 }
 
 model Message {
-  Message    String @db.VarChar
-  MessageID  Int    @id @default(autoincrement())
-  StreamerID String @map("streamerID") @db.VarChar
-  UserID     Int
-  User       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  MessageID Int    @id @default(autoincrement())
+  Message   String @db.VarChar
+  UserID    Int
+  StreamID  String @db.VarChar
+  User      User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 }
 
 model StreamerIdentifier {
-  StreamerID String @id @default(cuid()) @map("streamerID") @db.VarChar
-  UserID     Int    @unique
-  User       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  StreamID String @id @db.VarChar
+  UserID   Int    @unique
+  User     User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 
   @@index([UserID], map: "fki_FK_UserID")
   @@map("Stream")
@@ -39,6 +39,7 @@ model User {
   Country     String              @db.VarChar
   Log         Log[]
   Message     Message[]
+  Satoshi     Satoshi[]
   Stream      StreamerIdentifier?
 }
 
@@ -47,4 +48,11 @@ model Log {
   UserID  Int
   LogText String @db.VarChar
   User    User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+}
+
+model Satoshi {
+  UserID           Int
+  SatoshiAccountID Int      @id @default(autoincrement())
+  Amount           Decimal? @db.Decimal
+  User             User     @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "UserID")
 }

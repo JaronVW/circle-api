@@ -10,11 +10,4 @@ export class NpmserverService {
         const response = await axios.get('http://127.0.0.1:9997/v2/paths/list');
         return response.data;
     }
-
-    // async login(user: any) {
-    //     const payload = { username: user.username, sub: user.userId };
-    //     return {
-    //       access_token: this.jwtService.sign(payload),
-    //     };
-    //   }
 }

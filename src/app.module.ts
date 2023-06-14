@@ -10,10 +10,11 @@ import { NpmserverModule } from './npmserver/npmserver.module';
 import { HttpModule } from '@nestjs/axios';
 import { ConfigModule } from '@nestjs/config';
 import { LogsModule } from './logstable/logs.module';
+import { SatoshiModule } from './satoshi/satoshi.module';
 
 
 @Module({
-  imports: [AuthModule, UsersModule, ChatModule, NpmserverModule, HttpModule, ConfigModule.forRoot(), LogsModule],
+  imports: [AuthModule, UsersModule, ChatModule, NpmserverModule, HttpModule, ConfigModule.forRoot(), LogsModule, SatoshiModule],
   controllers: [AppController],
   providers: [AppService, NpmserverService],
 })
