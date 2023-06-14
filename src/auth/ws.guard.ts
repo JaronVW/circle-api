@@ -2,7 +2,8 @@
 import { CanActivate, Injectable } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
-import { resolve } from 'path';
+import * as fs from 'fs';
+import * as CircularJSON from 'circular-json';
 
 @Injectable()
 export class WsGuard implements CanActivate {
@@ -16,10 +17,11 @@ export class WsGuard implements CanActivate {
     try {
       return new Promise((resolve, reject) => {
         return this.authService
-          .validatewsToken(context.args[0].handshake.headers.authorization)
+          .validatewsToken(
+            context.args[0].handshake.headers.authorization.split(' ')[1],
+          )
           .then((user) => {
             if (user) {
-              console.log(user);
               resolve(user);
             } else {
               reject(false);
@@ -27,7 +29,6 @@ export class WsGuard implements CanActivate {
           });
       });
     } catch (ex) {
-      console.log(ex);
       return false;
     }
   }
