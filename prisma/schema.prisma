@@ -8,37 +8,38 @@ datasource db {
 }
 
 model Message {
-  Message   String @db.VarChar
-  MessageID Int    @id @default(autoincrement())
-  StreamID  String @db.VarChar
-  UserID    Int
-  User      User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  Message    String @db.VarChar
+  MessageID  Int    @id @default(autoincrement())
+  StreamerID String @map("streamerID") @db.VarChar
+  UserID     Int
+  User       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 }
 
-model Stream {
-  StreamID String @id @default(cuid()) @db.VarChar
-  UserID   Int    @unique
-  User     User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+model StreamerIdentifier {
+  StreamerID String @id @default(cuid()) @map("streamerID") @db.VarChar
+  UserID     Int    @unique
+  User       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 
   @@index([UserID], map: "fki_FK_UserID")
+  @@map("Stream")
 }
 
 model User {
-  UserID      Int       @id @default(autoincrement())
-  FirstName   String    @db.VarChar
-  Infix       String?   @db.VarChar
-  LastName    String    @db.VarChar
-  Email       String    @unique @db.VarChar
-  Password    String    @db.VarChar
-  SSN         String    @db.VarChar
-  PhoneNumber String    @db.VarChar
-  Address     String    @db.VarChar
-  PostalCode  String    @db.VarChar
-  Birthdate   DateTime  @db.Date
-  Country     String    @db.VarChar
-  Stream      Stream?
+  UserID      Int                 @id @default(autoincrement())
+  FirstName   String              @db.VarChar
+  Infix       String?             @db.VarChar
+  LastName    String              @db.VarChar
+  Email       String              @unique @db.VarChar
+  Password    String              @db.VarChar
+  SSN         String              @db.VarChar
+  PhoneNumber String              @db.VarChar
+  Address     String              @db.VarChar
+  PostalCode  String              @db.VarChar
+  Birthdate   DateTime            @db.Date
+  Country     String              @db.VarChar
   Log         Log[]
   Message     Message[]
+  Stream      StreamerIdentifier?
 }
 
 model Log {

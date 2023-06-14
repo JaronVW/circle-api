@@ -7,13 +7,10 @@ import {
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
 import { Server, Socket } from 'socket.io';
-import { AuthUser } from 'src/auth.decorator';
-import { JWTDecodedUser } from 'src/jwt.decoded.user';
-import * as child from 'child_process';
 import { UseGuards } from '@nestjs/common';
-import { LocalAuthGuard } from 'src/auth/local-auth.guard';
 import { MessageDto } from './message.dto';
 import { WsGuard } from 'src/auth/ws.guard';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
@@ -25,21 +22,20 @@ export class ChatGateway {
   @UseGuards(WsGuard)
   @SubscribeMessage('chat')
   async joinStream(
-    @MessageBody() streamId: string,
+    @MessageBody() connParams: { streamerID: string; userID: number },
     @ConnectedSocket() socket: Socket,
   ) {
-    socket.join(streamId);
-    socket.on(streamId, (message: MessageDto) => {
-      console.log('message', message);
+    socket.join(connParams.streamerID);
+    socket.on(connParams.streamerID, async (message: MessageDto) => {
       message.datetime = new Date();
-      this.server.to(streamId).emit(streamId, message);
-
-      // return message;
-      // this.service.PostMessage({
-      //   message: message,
-      //   userId: user.userId,
-      //   streamId: streamId,
-      // });
+      this.server
+        .to(connParams.streamerID)
+        .emit(connParams.streamerID, message);
+      await this.service.PostMessage(
+        message.message,
+        connParams.streamerID,
+        connParams.userID,
+      );
     });
   }
 }
