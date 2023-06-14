@@ -14,11 +14,7 @@ export class NpmserverController {
       );
     } catch (error) {
       console.error('Error fetching data: ', error);
-<<<<<<< HEAD
       return { error: 'Failed to fetch data' }
-=======
-      return { errpr: 'Failed to fetch data' };
->>>>>>> 1a9a0d6a166ac2b639fe5a4a29579c077e181c70
     }
   }
 }
