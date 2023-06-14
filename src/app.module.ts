@@ -16,6 +16,6 @@ import { SatoshiModule } from './satoshi/satoshi.module';
 @Module({
   imports: [AuthModule, UsersModule, ChatModule, NpmserverModule, HttpModule, ConfigModule.forRoot(), LogsModule, SatoshiModule],
   controllers: [AppController],
-  providers: [AppService, NpmserverService],
+  providers: [AppService],
 })
 export class AppModule {}

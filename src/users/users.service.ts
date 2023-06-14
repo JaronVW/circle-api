@@ -8,33 +8,18 @@ export type User = any;
 export class UsersService {
   constructor(private service: PrismaService) {}
 
-  private readonly users = [
-    {
-      userId: 1,
-      username: 'john',
-      password: 'changeme',
-    },
-    {
-      userId: 2,
-      username: 'maria',
-      password: 'guess',
-    },
-  ];
-
   async findOne(username: string): Promise<User | undefined> {
-    return this.service.user.findFirst({
+    return await this.service.user.findFirst({
       where: {
         Email: username,
       },
       include: {
         Stream: {
           select: {
-            StreamID: true,
+            StreamerID: true,
           },
         },
       },
     });
   }
 }
-
-// In a real app, this is where you'd build your user model and persistence layer, using your library of choice (e.g., TypeORM, Sequelize, Mongoose, etc.)
