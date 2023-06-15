@@ -12,7 +12,7 @@ export class SatoshiService {
     }
 
     async getAmountMoney(): Promise<Response[]> {
-        const response = await axios.get('http://localhost:3000/satoshi/amount');
+        const response = await axios.get('http://localhost:3000/satoshi/:id');
         return response.data;
     }
 }

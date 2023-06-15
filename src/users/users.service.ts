@@ -16,7 +16,7 @@ export class UsersService {
       include: {
         Stream: {
           select: {
-            StreamerID: true,
+            StreamID: true,
           },
         },
       },
