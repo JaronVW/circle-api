@@ -3,7 +3,7 @@ import { NpmserverService } from './npmserver.service';
 
 @Controller('npmserver')
 export class NpmserverController {
-  constructor(private readonly npmserverService: NpmserverService) {}
+  constructor(private readonly npmserverService: NpmserverService) { }
 
   @Get('live/streams')
   async getEndpoint(): Promise<any> {

@@ -15,7 +15,7 @@ export class NpmserverService {
       select: {
         Stream: {
           select: {
-            StreamID: true,
+            StreamerID: true,
           },
         },
         FirstName: true,
@@ -24,7 +24,7 @@ export class NpmserverService {
       },
       where: {
         Stream: {
-          StreamID: {
+          StreamerID: {
             in: live,
           },
         },

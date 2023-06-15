@@ -7,7 +7,10 @@ import { DateTime } from 'luxon';
 
 @Controller()
 export class AuthController {
-  constructor(private authService: AuthService, private logService: LogsService) {}
+  constructor(
+    private authService: AuthService,
+    private logService: LogsService,
+  ) {}
 
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
@@ -15,7 +18,8 @@ export class AuthController {
     const userId = req.user.UserID;
     this.logService.createLog({
       UserID: userId,
-      LogText: "User " + userId + " logged in on " + new Date().toLocaleString()
+      LogText:
+        'User ' + userId + ' logged in on ' + new Date().toLocaleString(),
     });
     return this.authService.login(req.user);
   }
@@ -23,10 +27,14 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
-    const userId = req.user.UserID
+    const userId = req.user.UserID;
     this.logService.createLog({
       UserID: userId,
-      LogText: "User " + userId + " requested profile on " + new Date().toLocaleString()
+      LogText:
+        'User ' +
+        userId +
+        ' requested profile on ' +
+        new Date().toLocaleString(),
     });
     return req.user;
   }
