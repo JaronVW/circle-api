@@ -11,12 +11,12 @@ model Message {
   MessageID Int    @id @default(autoincrement())
   Message   String @db.VarChar
   UserID    Int
-  StreamID  String @db.VarChar
+  StreamerID  String @db.VarChar
   User      User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 }
 
 model StreamerIdentifier {
-  StreamID String @id @db.VarChar
+  StreamerID String @id @db.VarChar
   UserID   Int    @unique
   User     User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 

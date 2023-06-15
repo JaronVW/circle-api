@@ -10,7 +10,7 @@ export class ChatService {
   async PostMessage(message: string, streamID: string, userID: number) {
     return await this.prisma.message.create({
       data: {
-        StreamID: streamID,
+        StreamerID: streamID,
         UserID: userID,
         Message: message,
       },
