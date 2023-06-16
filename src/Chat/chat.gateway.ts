@@ -13,6 +13,7 @@ import { WsGuard } from 'src/auth/ws.guard';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
+  connectCounter: number;
   constructor(private service: ChatService) {}
 
   @WebSocketServer()
@@ -24,17 +25,26 @@ export class ChatGateway {
     @MessageBody() connParams: { streamerID: string; userID: number },
     @ConnectedSocket() socket: Socket,
   ) {
-    socket.join(connParams.streamerID);
-    socket.on(connParams.streamerID, async (message: MessageDto) => {
-      message.datetime = new Date();
-      this.server
-        .to(connParams.streamerID)
-        .emit(connParams.streamerID, message);
-      await this.service.PostMessage(
-        message.message,
-        connParams.streamerID,
-        connParams.userID,
-      );
-    });
+    try {
+      if (this.connectCounter < 4) {
+        this.connectCounter++;
+        socket.join(connParams.streamerID);
+        socket.on(connParams.streamerID, async (message: MessageDto) => {
+          message.datetime = new Date();
+          this.server
+            .to(connParams.streamerID)
+            .emit(connParams.streamerID, message);
+          await this.service.PostMessage(
+            message.message,
+            connParams.streamerID,
+            connParams.userID,
+          );
+        });
+        socket.on('disconnect', function() { this.connectCounter--; });
+      }
+    } catch (error) {
+      console.error('Watching too many streams!!');
+      return { error: 'Watching too many streams!!' }
+    }
   }
 }
