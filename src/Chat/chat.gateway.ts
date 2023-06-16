@@ -13,7 +13,7 @@ import { WsGuard } from 'src/auth/ws.guard';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
-  connectCounter: number;
+  connectCounter: number = 0;
   constructor(private service: ChatService) {}
 
   @WebSocketServer()
@@ -25,11 +25,15 @@ export class ChatGateway {
     @MessageBody() connParams: { streamerID: string; userID: number },
     @ConnectedSocket() socket: Socket,
   ) {
+    console.log("chat join");
     try {
+      console.log("trycatch chat");
       if (this.connectCounter < 4) {
+        console.log("connectcounter");
         this.connectCounter++;
         socket.join(connParams.streamerID);
         socket.on(connParams.streamerID, async (message: MessageDto) => {
+          console.log(message, message.message, connParams.streamerID, connParams.userID);
           message.datetime = new Date();
           this.server
             .to(connParams.streamerID)

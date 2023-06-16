@@ -38,6 +38,7 @@ export class AuthService {
       username: user.Email,
       sub: user.UserID,
       stream: user.Stream ? user.Stream.StreamID : false,
+      fullName: user.FirstName + ' ' + (user.Infix ? user.Infix + ' ' : '') + user.LastName
     };
     return {
       access_token: this.jwtService.sign(payload),

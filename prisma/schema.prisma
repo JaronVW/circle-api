@@ -11,36 +11,39 @@ model Message {
   MessageID Int    @id @default(autoincrement())
   Message   String @db.VarChar
   UserID    Int
-  StreamerID  String @db.VarChar
+  StreamID  String @db.VarChar
   User      User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 }
 
 model StreamerIdentifier {
-  StreamerID String @id @db.VarChar
-  UserID   Int    @unique
-  User     User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  StreamID                   String @id @db.VarChar
+  UserID                     Int    @unique
+  User                       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  User_User_StreamIDToStream User[] @relation("User_StreamIDToStream")
 
   @@index([UserID], map: "fki_FK_UserID")
   @@map("Stream")
 }
 
 model User {
-  UserID      Int                 @id @default(autoincrement())
-  FirstName   String              @db.VarChar
-  Infix       String?             @db.VarChar
-  LastName    String              @db.VarChar
-  Email       String              @unique @db.VarChar
-  Password    String              @db.VarChar
-  SSN         String              @db.VarChar
-  PhoneNumber String              @db.VarChar
-  Address     String              @db.VarChar
-  PostalCode  String              @db.VarChar
-  Birthdate   DateTime            @db.Date
-  Country     String              @db.VarChar
-  Log         Log[]
-  Message     Message[]
-  Satoshi     Satoshi[]
-  Stream      StreamerIdentifier?
+  UserID                       Int                 @id @default(autoincrement())
+  FirstName                    String              @db.VarChar
+  Infix                        String?             @db.VarChar
+  LastName                     String              @db.VarChar
+  Email                        String              @unique @db.VarChar
+  Password                     String              @db.VarChar
+  SSN                          String              @db.VarChar
+  PhoneNumber                  String              @db.VarChar
+  Address                      String              @db.VarChar
+  PostalCode                   String              @db.VarChar
+  Birthdate                    DateTime            @db.Date
+  Country                      String              @db.VarChar
+  StreamID                     String?             @db.VarChar
+  Log                          Log[]
+  Message                      Message[]
+  Satoshi                      Satoshi[]
+  Stream                       StreamerIdentifier?
+  Stream_User_StreamIDToStream StreamerIdentifier? @relation("User_StreamIDToStream", fields: [StreamID], references: [StreamID], onDelete: NoAction, onUpdate: NoAction, map: "StreamID")
 }
 
 model Log {
