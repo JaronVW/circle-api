@@ -30,8 +30,22 @@ const ffmpeg = child_process.spawn('ffmpeg', [
   'aac',
   '-f',
   'flv',
-  `rtmp://localhost/ffmpeg`,
+  `rtmp://localhost/live/ffmpeg`,
 ]);
+
+ffmpeg.stderr.on('data', (data) => {
+  console.log('FFmpeg STDERR:', data.toString());
+});
+
+ffmpeg.on('close', (code, signal) => {
+  console.log(
+    'FFmpeg child process closed, code ' + code + ', signal ' + signal,
+  );
+});
+
+ffmpeg.stdin.on('error', (e) => {
+  console.log('FFmpeg STDIN Error', e);
+});
 
 ffmpeg.stderr.on('data', (data) => {
   console.log('FFmpeg STDERR:', data.toString());
@@ -39,7 +53,7 @@ ffmpeg.stderr.on('data', (data) => {
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
-  constructor(private service: ChatService) { }
+  constructor(private service: ChatService) {}
 
   @WebSocketServer()
   server: Server;
@@ -64,12 +78,8 @@ export class ChatGateway {
     });
   }
 
-
-
   @SubscribeMessage('data')
   async getData(@MessageBody() data: any) {
-
-
     ffmpeg.stdin.write(data);
   }
 }
