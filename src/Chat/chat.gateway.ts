@@ -62,11 +62,9 @@ export class ChatGateway {
   ) {
     socket.join(connParams.streamerID);
     socket.on(connParams.streamerID, async (message: MessageDto) => {
-      console.log(message);
       message.datetime = new Date();
       const signature = generateSymmetricSignature(message, connParams.key);
       // generate the signature to be sent to the client
-      console.log(signature);
       this.server
         .to(connParams.streamerID)
         .emit(connParams.streamerID, { ...message, signature });

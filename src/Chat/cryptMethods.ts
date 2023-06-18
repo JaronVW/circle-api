@@ -25,7 +25,5 @@ export function generateSymmetricSignature(
   },
   key: string,
 ) {
-  const message = MD5(JSON.stringify(messageContent));
-  console.log(message);
-  return AES.encrypt(message, key).toString();
+  return AES.encrypt(MD5(JSON.stringify(messageContent)), key).toString();
 }
