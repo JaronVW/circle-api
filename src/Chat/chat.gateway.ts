@@ -10,9 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { UseGuards } from '@nestjs/common';
 import { MessageDto } from './message.dto';
 import { WsGuard } from 'src/auth/ws.guard';
-import { decryptMessage, encryptMessage, shaHash } from './cryptMethods';
-import { json } from 'stream/consumers';
-import * as fs from 'fs';
+import { MD5 } from 'crypto-js';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
@@ -22,33 +20,34 @@ export class ChatGateway {
   server: Server;
 
   // @UseGuards(WsGuard)
-  @SubscribeMessage('chat')
+  @SubscribeMessage('chatchecksum')
   async joinStream(
-    @MessageBody() connParams: { streamerID: string; userID: number },
+    @MessageBody()
+    connParams: { streamerID: string; userID: number; checksum: string },
     @ConnectedSocket() socket: Socket,
   ) {
-    socket.join(connParams.streamerID);
-
-    socket.on(connParams.streamerID, async (message: MessageDto) => {
-      message.datetime = new Date();
-      const messageString = JSON.stringify(message);
-      const encryptedMessage = encryptMessage(
-        messageString,
-        fs.readFileSync('rsa.private').toString(),
-      );
-      const hashedMessage = shaHash(messageString);
-      const signature = encryptMessage(
-        hashedMessage,
-        fs.readFileSync('rsa.private').toString(),
-      );
-      this.server
-        .to(connParams.streamerID)
-        .emit(connParams.streamerID, { encryptedMessage, signature });
-      // await this.service.PostMessage(
-      //   message.message,
-      //   connParams.streamerID,
-      //   connParams.userID,
-      // );
-    });
+    if (
+      connParams.checksum ==
+      MD5(
+        JSON.stringify({
+          streamerID: connParams.streamerID,
+          userID: connParams.userID,
+        }),
+      ).toString()
+    ) {
+      console.log('joined');
+      socket.join(connParams.streamerID);
+      socket.on(connParams.streamerID, async (message: MessageDto) => {
+        message.datetime = new Date();
+        this.server
+          .to(connParams.streamerID)
+          .emit(connParams.streamerID, message);
+        // await this.service.PostMessage(
+        //   message.message,
+        //   connParams.streamerID,
+        //   connParams.userID,
+        // );
+      });
+    }
   }
 }
