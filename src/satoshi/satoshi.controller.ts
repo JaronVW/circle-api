@@ -4,10 +4,16 @@ import { PrismaService } from 'src/prisma.service';
 
 @Controller('satoshi')
 export class SatoshiController {
-  constructor(private readonly satoshiService: SatoshiService, private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly satoshiService: SatoshiService,
+    private readonly prismaService: PrismaService,
+  ) {}
 
   @Put(':id')
-  async createAddMoney(@Param('id') id: number, @Body() data: any): Promise<any> {
+  async createAddMoney(
+    @Param('id') id: number,
+    @Body() data: any,
+  ): Promise<any> {
     const updatedData = await this.prismaService.satoshi.update({
       where: {
         SatoshiAccountID: Number(id),
@@ -25,7 +31,7 @@ export class SatoshiController {
       const data = await this.satoshiService.getAmountMoney();
     } catch (error) {
       console.error('Error fetching data: ', error);
-      return { error: 'Failed to fetch data' }
+      return { error: 'Failed to fetch data' };
     }
   }
 }

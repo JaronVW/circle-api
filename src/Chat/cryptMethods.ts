@@ -27,3 +27,17 @@ export function generateSymmetricSignature(
 ) {
   return AES.encrypt(MD5(JSON.stringify(messageContent)), key).toString();
 }
+
+export function verifySignature(
+  messageContent: {
+    message: string;
+    fullName: string;
+  },
+  signature: string,
+  key: string,
+) {
+  return (
+    AES.encrypt(signature, key).toString() ==
+    MD5(JSON.stringify(messageContent)).toString()
+  );
+}
