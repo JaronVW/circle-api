@@ -37,4 +37,9 @@ export class NpmserverService {
     console.log(response.data);
     return response.data;
   }
+
+  async getUserByStreamId(): Promise<any> {
+    const response = await axios.get('http://localhost:3000/user/:streamid');
+    return response.data;
+  }
 }

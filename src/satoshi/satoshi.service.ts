@@ -12,8 +12,13 @@ export class SatoshiService {
     return this.service.satoshi.create({ data });
   }
   
-  async getAmountMoney(): Promise<Response[]> {
+  async getAmountMoney(): Promise<any> {
     const response = await axios.get('http://localhost:3000/satoshi/:id');
+    return response.data;
+  }
+
+  async getSatoshiIdByStreamId(): Promise<any> {
+    const response = await axios.get('http://localhost:3000/satoshi/stream/:streamid');
     return response.data;
   }
 }

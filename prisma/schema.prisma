@@ -26,24 +26,26 @@ model StreamerIdentifier {
 }
 
 model User {
-  UserID                       Int                 @id @default(autoincrement())
-  FirstName                    String              @db.VarChar
-  Infix                        String?             @db.VarChar
-  LastName                     String              @db.VarChar
-  Email                        String              @unique @db.VarChar
-  Password                     String              @db.VarChar
-  SSN                          String              @db.VarChar
-  PhoneNumber                  String              @db.VarChar
-  Address                      String              @db.VarChar
-  PostalCode                   String              @db.VarChar
-  Birthdate                    DateTime            @db.Date
-  Country                      String              @db.VarChar
-  StreamID                     String?             @db.VarChar
-  Log                          Log[]
-  Message                      Message[]
-  Satoshi                      Satoshi[]
-  Stream                       StreamerIdentifier?
-  Stream_User_StreamIDToStream StreamerIdentifier? @relation("User_StreamIDToStream", fields: [StreamID], references: [StreamID], onDelete: NoAction, onUpdate: NoAction, map: "StreamID")
+  UserID                          Int                 @id @default(autoincrement())
+  FirstName                       String              @db.VarChar
+  Infix                           String?             @db.VarChar
+  LastName                        String              @db.VarChar
+  Email                           String              @unique @db.VarChar
+  Password                        String              @db.VarChar
+  SSN                             String              @db.VarChar
+  PhoneNumber                     String              @db.VarChar
+  Address                         String              @db.VarChar
+  PostalCode                      String              @db.VarChar
+  Birthdate                       DateTime            @db.Date
+  Country                         String              @db.VarChar
+  StreamID                        String?             @db.VarChar
+  SatoshiID                       Int?
+  Log                             Log[]
+  Message                         Message[]
+  Satoshi                         Satoshi[]
+  Stream                          StreamerIdentifier?
+  Satoshi_User_SatoshiIDToSatoshi Satoshi?            @relation("User_SatoshiIDToSatoshi", fields: [SatoshiID], references: [SatoshiAccountID], onDelete: NoAction, onUpdate: NoAction, map: "SatoshiID")
+  Stream_User_StreamIDToStream    StreamerIdentifier? @relation("User_StreamIDToStream", fields: [StreamID], references: [StreamID], onDelete: NoAction, onUpdate: NoAction, map: "StreamID")
 }
 
 model Log {
@@ -54,8 +56,9 @@ model Log {
 }
 
 model Satoshi {
-  UserID           Int
-  SatoshiAccountID Int      @id @default(autoincrement())
-  Amount           Decimal? @db.Decimal
-  User             User     @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "UserID")
+  UserID                       Int
+  SatoshiAccountID             Int      @id @default(autoincrement())
+  Amount                       Decimal? @db.Decimal
+  User                         User     @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "UserID")
+  User_User_SatoshiIDToSatoshi User[]   @relation("User_SatoshiIDToSatoshi")
 }
