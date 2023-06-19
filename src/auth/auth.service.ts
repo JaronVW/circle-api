@@ -14,6 +14,8 @@ export class AuthService {
     const user = await this.usersService.findOne(username);
     if (!user) return null;
     const res = await bcrypt.compare(pass, user.Password);
+    console.log(pass, user.Password);
+    console.log(res);
     if (res) {
       const { Password, ...result } = user;
       return result;
@@ -36,6 +38,7 @@ export class AuthService {
       username: user.Email,
       sub: user.UserID,
       stream: user.Stream ? user.Stream.StreamID : false,
+      fullName: user.FirstName + ' ' + (user.Infix ? user.Infix + ' ' : '') + user.LastName
     };
     return {
       access_token: this.jwtService.sign(payload),

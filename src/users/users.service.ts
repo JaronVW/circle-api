@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 
-// This should be a real class/interface representing a user entity
-export type User = any;
-
 @Injectable()
 export class UsersService {
   constructor(private service: PrismaService) {}
 
-  async findOne(username: string): Promise<User | undefined> {
+  async findOne(username: string): Promise<any> {
     return await this.service.user.findFirst({
       where: {
         Email: username,
@@ -16,7 +13,7 @@ export class UsersService {
       include: {
         Stream: {
           select: {
-            StreamerID: true,
+            StreamID: true,
           },
         },
       },
