@@ -24,6 +24,16 @@ export class NpmserverController {
   @Get('/user/:streamid')
   async getUserByStreamID(@Param('streamid') streamID: string): Promise<any> {
     const resource = await this.prismaService.user.findFirst({
+      select: {
+        Stream: {
+          select: {
+            StreamID: true,
+          },
+        },
+        FirstName: true,
+        LastName: true,
+        Infix: true,
+      },
       where: { StreamID: streamID }
     });
     return resource;
