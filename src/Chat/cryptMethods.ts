@@ -1,43 +1,18 @@
-import { privateEncrypt, publicDecrypt } from 'crypto';
-import { AES, SHA256 } from 'crypto-js';
-import { MD5 } from 'crypto-js';
+import { publicDecrypt, verify } from 'crypto';
+import { SHA256 } from 'crypto-js';
 
-export function encryptMessage(message: string, privateKey: string) {
-  return privateEncrypt(privateKey, Buffer.from(message)).toString('base64');
-}
-
-export function decryptMessage(encryptedData: string, publicKey: string) {
-  return publicDecrypt(
-    publicKey,
-    Buffer.from(encryptedData, 'base64'),
-  ).toString();
-}
-
-export function shaHash(data: string) {
-  return SHA256(data).toString();
-}
-
-export function generateSymmetricSignature(
+export function verifySignatureChatRequest(
   messageContent: {
-    message: string;
-    fullName: string;
-    datetime: Date;
-  },
-  key: string,
-) {
-  return AES.encrypt(MD5(JSON.stringify(messageContent)), key).toString();
-}
-
-export function verifySignature(
-  messageContent: {
-    message: string;
-    fullName: string;
+    streamerID: string;
+    userID: number;
   },
   signature: string,
   key: string,
 ) {
-  return (
-    AES.encrypt(signature, key).toString() ==
-    MD5(JSON.stringify(messageContent)).toString()
+  return verify(
+    'sha256',
+    Buffer.from(JSON.stringify(messageContent)),
+    '-----BEGIN PUBLIC KEY-----\n' + key + '\n-----END PUBLIC KEY-----',
+    Buffer.from(signature, 'base64'),
   );
 }

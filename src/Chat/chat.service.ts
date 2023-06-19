@@ -17,7 +17,7 @@ export class ChatService {
     });
     return await this.prisma.message.create({
       data: {
-        StreamID: streamID,
+        StreamerID: streamID,
         UserID: userID,
         Message: message,
       },

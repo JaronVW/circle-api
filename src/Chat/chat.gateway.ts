@@ -10,7 +10,7 @@ import { Server, Socket } from 'socket.io';
 import { UseGuards } from '@nestjs/common';
 import { MessageDto } from './message.dto';
 import { WsGuard } from 'src/auth/ws.guard';
-import { verifySignature } from './cryptMethods';
+import { verifySignatureChatRequest } from './cryptMethods';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
@@ -38,6 +38,20 @@ export class ChatGateway {
       amount = 0;
     }
     if (amount < 4) {
+      console.log(connParams);
+      if (
+        !verifySignatureChatRequest(
+          {
+            streamerID: connParams.streamerID,
+            userID: connParams.userID,
+          },
+          connParams.signature,
+          connParams.publicKey,
+        )
+      ) {
+        socket.emit('rejected');
+        return;
+      }
       socket.emit('accepted');
       socket.join(connParams.streamerID);
       this.connectionsPerUserID.set(connParams.userID, amount + 1);

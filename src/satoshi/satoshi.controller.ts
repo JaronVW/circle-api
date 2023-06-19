@@ -12,7 +12,7 @@ export class SatoshiController {
   @Get('stream/:streamid')
   async getSatoshiIdByStreamId(@Param('streamid') id: string) {
     const user = await this.prismaService.user.findFirst({
-      where: { StreamID: id },
+      where: { StreamerID: id },
       select: { UserID: true },
     });
     if (!user) {

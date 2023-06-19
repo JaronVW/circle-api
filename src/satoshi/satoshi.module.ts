@@ -6,10 +6,17 @@ import { HttpModule } from '@nestjs/axios';
 import { DoublingService } from './doubling.service';
 import { ConfigModule } from '@nestjs/config';
 import { VideoService } from './videowatcher.service';
+import { LogsService } from 'src/logstable/logs.service';
 
 @Module({
   controllers: [SatoshiController],
   imports: [HttpModule, ConfigModule],
-  providers: [SatoshiService, PrismaService, DoublingService, VideoService]
+  providers: [
+    SatoshiService,
+    PrismaService,
+    DoublingService,
+    VideoService,
+    LogsService,
+  ],
 })
 export class SatoshiModule {}

@@ -11,6 +11,9 @@ export class NpmserverController {
   async getEndpoint(): Promise<any> {
     try {
       const data = await this.npmserverService.fetchData();
+      const res = await this.npmserverService.getStreamersDataFeed(
+        data.items.map((item) => item.name),
+      );
       return await this.npmserverService.getStreamersDataFeed(
         data.items.map((item) => item.name),
       );
@@ -27,14 +30,14 @@ export class NpmserverController {
       select: {
         Stream: {
           select: {
-            StreamID: true,
+            StreamerID: true,
           },
         },
         FirstName: true,
         LastName: true,
         Infix: true,
       },
-      where: { StreamID: streamID }
+      where: { StreamerID: streamID }
     });
     return resource;
   }
