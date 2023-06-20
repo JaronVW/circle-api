@@ -8,17 +8,17 @@ datasource db {
 }
 
 model Message {
-  MessageID Int    @id @default(autoincrement())
-  Message   String @db.VarChar
-  UserID    Int
-  StreamerID  String @db.VarChar
-  User      User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  MessageID  Int    @id @default(autoincrement())
+  Message    String @db.VarChar
+  UserID     Int
+  StreamerID String @db.VarChar
+  User       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 }
 
 model StreamerIdentifier {
-  StreamerID                   String @id @db.VarChar
-  UserID                     Int    @unique
-  User                       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  StreamerID String @id @db.VarChar
+  UserID     Int    @unique
+  User       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 
   @@index([UserID], map: "fki_FK_UserID")
   @@map("Stream")
