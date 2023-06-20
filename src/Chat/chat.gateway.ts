@@ -20,7 +20,7 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  @UseGuards(WsGuard)
+  // @UseGuards(WsGuard)
   @SubscribeMessage('chat')
   async joinStream(
     @MessageBody() connParams: { streamerID: string; userID: number },
