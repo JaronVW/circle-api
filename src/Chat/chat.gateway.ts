@@ -8,8 +8,8 @@ import {
 import { ChatService } from './chat.service';
 import { Server, Socket } from 'socket.io';
 import { UseGuards } from '@nestjs/common';
-import { MessageDto } from './message.dto';
 import { WsGuard } from 'src/auth/ws.guard';
+import { MessageDto } from './message.dto';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {

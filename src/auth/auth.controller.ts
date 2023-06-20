@@ -3,7 +3,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 import { AuthService } from '../auth/auth.service';
 import { LogsService } from 'src/logstable/logs.service';
-import { DateTime } from 'luxon';
 
 @Controller()
 export class AuthController {
