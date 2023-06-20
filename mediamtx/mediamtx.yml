@@ -1,4 +1,3 @@
-
 ###############################################
 # General parameters
 
@@ -74,7 +73,7 @@ rtspDisable: no
 protocols: [udp, multicast, tcp]
 # Encrypt handshakes and TCP streams with TLS (RTSPS).
 # Available values are "no", "strict", "optional".
-encryption: "no"
+encryption: 'no'
 # Address of the TCP/RTSP listener. This is needed only when encryption is "no" or "optional".
 rtspAddress: :8554
 # Address of the TCP/TLS/RTSPS listener. This is needed only when encryption is "strict" or "optional".
@@ -109,7 +108,7 @@ rtmpDisable: no
 rtmpAddress: :1935
 # Encrypt connections with TLS (RTMPS).
 # Available values are "no", "strict", "optional".
-rtmpEncryption: "no"
+rtmpEncryption: 'no'
 # Address of the RTMPS listener. This is needed only when encryption is "strict" or "optional".
 rtmpsAddress: :1936
 # Path to the server key. This is needed only when encryption is "strict" or "optional".
@@ -350,7 +349,7 @@ paths:
     rpiCameraAWB: auto
     # denoise operating mode.
     # values: off, cdn_off, cdn_fast, cdn_hq
-    rpiCameraDenoise: "off"
+    rpiCameraDenoise: 'off'
     # fixed shutter speed, in microseconds.
     rpiCameraShutter: 0
     # metering mode of the AEC/AGC algorithm.
@@ -442,7 +441,7 @@ paths:
     # * RTSP_PORT: server port
     # * G1, G2, ...: regular expression groups, if path name is
     #   a regular expression.
-    runOnReady: ffmpeg -i rtsp://localhost:$RTSP_PORT/$RTSP_PATH -c copy -f segment -strftime 1 -segment_time 60 -segment_format mpegts video/saved_%Y-%m-%d_%H-%M-%S.ts
+    runOnReady: ffmpeg -i rtsp://localhost:$RTSP_PORT/$RTSP_PATH -c copy -f segment -strftime 1 -segment_time 60 -segment_format mpegts video/saved_%Y-%m-%d_%H-%M-%S.mp4
     runOnReadyRestart: yes
 
     # Command to run when a clients starts reading.

@@ -20,7 +20,7 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  // @UseGuards(WsGuard)
+  @UseGuards(WsGuard)
   @SubscribeMessage('chat')
   async joinStream(
     @MessageBody() connParams: { streamerID: string; userID: number },
@@ -32,15 +32,20 @@ export class ChatGateway {
       amount = 0;
     }
     if (amount < 4) {
-      socket.emit("accepted");
-      console.log("connectcounter");
+      socket.emit('accepted');
+      console.log('connectcounter');
       socket.join(connParams.streamerID);
       this.connectCounter++;
       console.log(this.connectionsPerUserID.get(connParams.userID));
       this.connectionsPerUserID.set(connParams.userID, amount + 1);
       console.log(this.connectionsPerUserID);
       socket.on(connParams.streamerID, async (message: MessageDto) => {
-        console.log(message, message.message, connParams.streamerID, connParams.userID);
+        console.log(
+          message,
+          message.message,
+          connParams.streamerID,
+          connParams.userID,
+        );
         message.datetime = new Date();
         this.server
           .to(connParams.streamerID)
@@ -52,18 +57,37 @@ export class ChatGateway {
         );
       });
       socket.on('disconnect', () => {
-        this.connectionsPerUserID.set(connParams.userID, this.connectionsPerUserID.get(connParams.userID) - 1);
+        this.connectionsPerUserID.set(
+          connParams.userID,
+          this.connectionsPerUserID.get(connParams.userID) - 1,
+        );
         if (this.server.sockets.adapter.rooms.get(connParams.streamerID)) {
-          this.server.to(connParams.streamerID).emit("viewers", this.server.sockets.adapter.rooms.get(connParams.streamerID).size);
-          console.log("No of viewers: " + this.server.sockets.adapter.rooms.get(connParams.streamerID).size);
+          this.server
+            .to(connParams.streamerID)
+            .emit(
+              'viewers',
+              this.server.sockets.adapter.rooms.get(connParams.streamerID).size,
+            );
+          console.log(
+            'No of viewers: ' +
+              this.server.sockets.adapter.rooms.get(connParams.streamerID).size,
+          );
           console.log(this.connectionsPerUserID);
         }
-        console.log("leave room, ", this.connectCounter);
+        console.log('leave room, ', this.connectCounter);
       });
-      this.server.to(connParams.streamerID).emit("viewers", this.server.sockets.adapter.rooms.get(connParams.streamerID).size);
-      console.log("No of viewers: " + this.server.sockets.adapter.rooms.get(connParams.streamerID).size);
+      this.server
+        .to(connParams.streamerID)
+        .emit(
+          'viewers',
+          this.server.sockets.adapter.rooms.get(connParams.streamerID).size,
+        );
+      console.log(
+        'No of viewers: ' +
+          this.server.sockets.adapter.rooms.get(connParams.streamerID).size,
+      );
     } else {
-      socket.emit("rejected");
+      socket.emit('rejected');
     }
   }
 }
