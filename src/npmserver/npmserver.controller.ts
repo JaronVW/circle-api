@@ -1,6 +1,7 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { NpmserverService } from './npmserver.service';
 import { PrismaService } from 'src/prisma.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('npmserver')
 export class NpmserverController {
@@ -10,13 +11,13 @@ export class NpmserverController {
   ) {}
 
   @Get('live/streams')
+  @UseGuards(JwtAuthGuard)
   async getEndpoint(): Promise<any> {
     try {
       const data = await this.npmserverService.fetchData();
       return await this.npmserverService.getStreamersDataFeed(
         data.items.map((item) => item.name),
       );
-      // return data;
     } catch (error) {
       console.error('Error fetching data: ', error);
       return { error: 'Failed to fetch data' };
@@ -24,7 +25,8 @@ export class NpmserverController {
   }
 
   @Get('/user/:streamid')
-  async getUserByStreamID(@Param('streamid') streamerID: string): Promise<any> {
+  @UseGuards(JwtAuthGuard)
+  async getUserByStreamID(@Param('streamid') streamID: string): Promise<any> {
     const resource = await this.prismaService.user.findFirst({
       select: {
         Stream: {
