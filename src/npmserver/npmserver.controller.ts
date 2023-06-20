@@ -1,9 +1,11 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { NpmserverService } from './npmserver.service';
+import { PrismaService } from 'src/prisma.service';
 
 @Controller('npmserver')
 export class NpmserverController {
-  constructor(private readonly npmserverService: NpmserverService) {}
+  constructor(private readonly npmserverService: NpmserverService,
+    private readonly prismaService: PrismaService) { }
 
   @Get('live/streams')
   async getEndpoint(): Promise<any> {
@@ -12,9 +14,28 @@ export class NpmserverController {
       return await this.npmserverService.getStreamersDataFeed(
         data.items.map((item) => item.name),
       );
+      // return data;
     } catch (error) {
       console.error('Error fetching data: ', error);
-      return { errpr: 'Failed to fetch data' };
+      return { error: 'Failed to fetch data' }
     }
+  }
+
+  @Get('/user/:streamid')
+  async getUserByStreamID(@Param('streamid') streamID: string): Promise<any> {
+    const resource = await this.prismaService.user.findFirst({
+      select: {
+        Stream: {
+          select: {
+            StreamID: true,
+          },
+        },
+        FirstName: true,
+        LastName: true,
+        Infix: true,
+      },
+      where: { StreamID: streamID }
+    });
+    return resource;
   }
 }
