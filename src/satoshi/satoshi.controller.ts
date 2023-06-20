@@ -6,13 +6,21 @@ import { LogsService } from 'src/logstable/logs.service';
 
 @Controller('satoshi')
 export class SatoshiController {
-  constructor(private readonly satoshiService: SatoshiService, private readonly prismaService: PrismaService,
-    private readonly doublingService: DoublingService, private readonly logService: LogsService) {}
+  constructor(
+    private readonly satoshiService: SatoshiService,
+    private readonly prismaService: PrismaService,
+    private readonly doublingService: DoublingService,
+    private readonly logService: LogsService,
+  ) {}
 
   @Get('stream/:streamid')
   async getSatoshiIdByStreamId(@Param('streamid') id: string) {
     const user = await this.prismaService.user.findFirst({
-      where: { StreamID: id },
+      where: {
+        Stream: {
+          StreamerID: id,
+        },
+      },
       select: { UserID: true },
     });
     if (!user) {
@@ -26,9 +34,12 @@ export class SatoshiController {
   }
 
   @Put(':id/:amount')
-  async createAddMoney(@Param('id') id: number, @Param('amount') hours: number): Promise<any> {
+  async createAddMoney(
+    @Param('id') id: number,
+    @Param('amount') hours: number,
+  ): Promise<any> {
     const account = await this.getAmountMoney(id);
-    var start = Number(account.Amount);
+    const start = Number(account.Amount);
     const newAmount = this.doublingService.doubleNumberNTimes(start, hours);
     const userID = this.prismaService.user.findFirst({
       where: { SatoshiID: Number(id) },
@@ -41,7 +52,9 @@ export class SatoshiController {
       LogText:
         'User ' +
         userID +
-        ' updated satoshi amount to ' + newAmount + ' on ' +
+        ' updated satoshi amount to ' +
+        newAmount +
+        ' on ' +
         new Date().toLocaleString(),
     });
     const updatedData = await this.prismaService.satoshi.update({

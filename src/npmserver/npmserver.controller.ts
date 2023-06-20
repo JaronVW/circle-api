@@ -4,8 +4,10 @@ import { PrismaService } from 'src/prisma.service';
 
 @Controller('npmserver')
 export class NpmserverController {
-  constructor(private readonly npmserverService: NpmserverService,
-    private readonly prismaService: PrismaService) { }
+  constructor(
+    private readonly npmserverService: NpmserverService,
+    private readonly prismaService: PrismaService,
+  ) {}
 
   @Get('live/streams')
   async getEndpoint(): Promise<any> {
@@ -17,24 +19,28 @@ export class NpmserverController {
       // return data;
     } catch (error) {
       console.error('Error fetching data: ', error);
-      return { error: 'Failed to fetch data' }
+      return { error: 'Failed to fetch data' };
     }
   }
 
   @Get('/user/:streamid')
-  async getUserByStreamID(@Param('streamid') streamID: string): Promise<any> {
+  async getUserByStreamID(@Param('streamid') streamerID: string): Promise<any> {
     const resource = await this.prismaService.user.findFirst({
       select: {
         Stream: {
           select: {
-            StreamID: true,
+            StreamerID: true,
           },
         },
         FirstName: true,
         LastName: true,
         Infix: true,
       },
-      where: { StreamID: streamID }
+      where: {
+        Stream: {
+          StreamerID: streamerID,
+        },
+      },
     });
     return resource;
   }

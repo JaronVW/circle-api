@@ -4,20 +4,25 @@ import { LogsService } from 'src/logstable/logs.service';
 
 @Injectable()
 export class ChatService {
-  constructor(private prisma: PrismaService, private readonly logService: LogsService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly logService: LogsService,
+  ) {}
 
-  async PostMessage(message: string, streamID: string, userID: number) {
+  async PostMessage(message: string, streamerID: string, userID: number) {
     this.logService.createLog({
       UserID: userID,
       LogText:
         'User ' +
         userID +
-        ' commented ' + message + ' on ' +
+        ' commented ' +
+        message +
+        ' on ' +
         new Date().toLocaleString(),
     });
     return await this.prisma.message.create({
       data: {
-        StreamID: streamID,
+        StreamerID: streamerID,
         UserID: userID,
         Message: message,
       },
