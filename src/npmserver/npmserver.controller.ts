@@ -26,7 +26,7 @@ export class NpmserverController {
 
   @Get('/user/:streamid')
   @UseGuards(JwtAuthGuard)
-  async getUserByStreamID(@Param('streamid') streamID: string): Promise<any> {
+  async getUserByStreamID(@Param('streamid') streamerID: string): Promise<any> {
     const resource = await this.prismaService.user.findFirst({
       select: {
         Stream: {

@@ -37,7 +37,7 @@ export class AuthService {
     const payload = {
       username: user.Email,
       sub: user.UserID,
-      stream: user.Stream ? user.Stream.StreamID : false,
+      stream: user.Stream ? user.Stream.StreamerID : false,
       fullName:
         user.FirstName +
         ' ' +
