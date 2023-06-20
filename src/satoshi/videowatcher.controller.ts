@@ -1,5 +1,7 @@
 import * as chokidar from 'chokidar';
 import * as ffmpeg from 'fluent-ffmpeg';
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+ffmpeg.setFfmpegPath(ffmpegPath);
 import axios from 'axios';
 
 export class VideoWatcher {
