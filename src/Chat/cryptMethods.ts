@@ -1,5 +1,4 @@
-import { publicDecrypt, verify } from 'crypto';
-import { SHA256 } from 'crypto-js';
+import { verify } from 'crypto';
 
 export function verifySignatureChatRequest(
   messageContent: {
@@ -12,7 +11,24 @@ export function verifySignatureChatRequest(
   return verify(
     'sha256',
     Buffer.from(JSON.stringify(messageContent)),
-    '-----BEGIN PUBLIC KEY-----\n' + key + '\n-----END PUBLIC KEY-----',
+    key,
+    Buffer.from(signature, 'base64'),
+  );
+}
+
+export function verifySignatureChatMessage(
+  messageContent: {
+    message: string;
+    fullName: string;
+    datetime: Date;
+  },
+  signature: string,
+  key: string,
+) {
+  return verify(
+    'sha256',
+    Buffer.from(JSON.stringify(messageContent)),
+    key,
     Buffer.from(signature, 'base64'),
   );
 }

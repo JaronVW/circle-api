@@ -10,7 +10,10 @@ import { Server, Socket } from 'socket.io';
 import { UseGuards } from '@nestjs/common';
 import { MessageDto } from './message.dto';
 import { WsGuard } from 'src/auth/ws.guard';
-import { verifySignatureChatRequest } from './cryptMethods';
+import {
+  verifySignatureChatMessage,
+  verifySignatureChatRequest,
+} from './cryptMethods';
 
 @WebSocketGateway({ cors: true })
 export class ChatGateway {
@@ -21,7 +24,7 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
 
-  @UseGuards(WsGuard)
+  // @UseGuards(WsGuard)
   @SubscribeMessage('chat')
   async joinStream(
     @MessageBody()
@@ -49,17 +52,46 @@ export class ChatGateway {
           connParams.publicKey,
         )
       ) {
-        socket.emit('rejected');
+        console.log('Invalid signature');
+        socket.emit('rejected', 'Invalid signature');
         return;
       }
       socket.emit('accepted');
       socket.join(connParams.streamerID);
       this.connectionsPerUserID.set(connParams.userID, amount + 1);
       socket.on(connParams.streamerID, async (message: MessageDto) => {
-        message.datetime = new Date();
-        this.server
-          .to(connParams.streamerID)
-          .emit(connParams.streamerID, message);
+        if (
+          !verifySignatureChatMessage(
+            {
+              message: message.message,
+              fullName: message.fullName,
+              datetime: message.datetime,
+            },
+            message.signature,
+            connParams.publicKey,
+          )
+        ) {
+          console.log(message);
+          return;
+        }
+        console.log({
+          originalData: {
+            message: message.message,
+            fullName: message.fullName,
+            datetime: message.datetime,
+          },
+          signature: message.signature,
+          publicKey: connParams.publicKey,
+        });
+        this.server.to(connParams.streamerID).emit(connParams.streamerID, {
+          originalData: {
+            message: message.message,
+            fullName: message.fullName,
+            datetime: message.datetime,
+          },
+          signature: message.signature,
+          publicKey: connParams.publicKey,
+        });
         await this.service.PostMessage(
           message.message,
           connParams.streamerID,
@@ -82,8 +114,7 @@ export class ChatGateway {
             'No of viewers: ' +
               this.server.sockets.adapter.rooms.get(connParams.streamerID).size,
           );
-          console.log(this.connectionsPerUserID);
-        }
+        } 
       });
       this.server
         .to(connParams.streamerID)
@@ -96,7 +127,7 @@ export class ChatGateway {
           this.server.sockets.adapter.rooms.get(connParams.streamerID).size,
       );
     } else {
-      socket.emit('rejected');
+      socket.emit('rejected', 'Too many connections');
     }
   }
 }
