@@ -15,13 +15,13 @@ import { VideoService } from './satoshi/videowatcher.service';
 
 
 @Module({
-  imports: [AuthModule, UsersModule, ChatModule, NpmserverModule, HttpModule, ConfigModule.forRoot(), LogsModule, SatoshiModule],
+  imports: [AuthModule, UsersModule, ChatModule, NpmserverModule, HttpModule, ConfigModule.forRoot(), LogsModule],
   controllers: [AppController],
   providers: [AppService, VideoService],
 })
 
 export class AppModule {
   constructor(private readonly videoService: VideoService) {
-    this.videoService.startVideoWatcher();
+    // this.videoService.startVideoWatcher();
   }
 }

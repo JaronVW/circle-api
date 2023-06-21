@@ -15,6 +15,9 @@ export class NpmserverController {
   async getEndpoint(): Promise<any> {
     try {
       const data = await this.npmserverService.fetchData();
+      const res = await this.npmserverService.getStreamersDataFeed(
+        data.items.map((item) => item.name),
+      );
       return await this.npmserverService.getStreamersDataFeed(
         data.items.map((item) => item.name),
       );
@@ -38,11 +41,7 @@ export class NpmserverController {
         LastName: true,
         Infix: true,
       },
-      where: {
-        Stream: {
-          StreamerID: streamerID,
-        },
-      },
+      where: { StreamerID: streamerID }
     });
     return resource;
   }

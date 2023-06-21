@@ -8,17 +8,18 @@ datasource db {
 }
 
 model Message {
-  MessageID  Int    @id @default(autoincrement())
-  Message    String @db.VarChar
-  UserID     Int
-  StreamerID String @db.VarChar
-  User       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  MessageID Int    @id @default(autoincrement())
+  Message   String @db.VarChar
+  UserID    Int
+  StreamerID  String @db.VarChar
+  User      User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 }
 
 model StreamerIdentifier {
-  StreamerID String @id @db.VarChar
-  UserID     Int    @unique
-  User       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  StreamerID                   String @id @db.VarChar
+  UserID                     Int    @unique
+  User                       User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
+  User_User_StreamIDToStream User[] @relation("User_StreamIDToStream")
 
   @@index([UserID], map: "fki_FK_UserID")
   @@map("Stream")
@@ -37,12 +38,14 @@ model User {
   PostalCode                      String              @db.VarChar
   Birthdate                       DateTime            @db.Date
   Country                         String              @db.VarChar
+  StreamerID                        String?             @db.VarChar
   SatoshiID                       Int?
   Log                             Log[]
   Message                         Message[]
   Satoshi                         Satoshi[]
   Stream                          StreamerIdentifier?
   Satoshi_User_SatoshiIDToSatoshi Satoshi?            @relation("User_SatoshiIDToSatoshi", fields: [SatoshiID], references: [SatoshiAccountID], onDelete: NoAction, onUpdate: NoAction, map: "SatoshiID")
+  Stream_User_StreamIDToStream    StreamerIdentifier? @relation("User_StreamIDToStream", fields: [StreamerID], references: [StreamerID], onDelete: NoAction, onUpdate: NoAction, map: "StreamerID")
 }
 
 model Log {
