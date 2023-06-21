@@ -19,7 +19,7 @@ export class SatoshiController {
   @UseGuards(JwtAuthGuard)
   async getSatoshiIdByStreamId(@Param('streamid') id: string) {
     const user = await this.prismaService.user.findFirst({
-      where: { StreamerID: id },
+      where: { Stream: { StreamerID: id } },
       select: { UserID: true },
     });
     if (!user) {

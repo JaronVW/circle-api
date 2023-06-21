@@ -41,7 +41,7 @@ export class NpmserverController {
         LastName: true,
         Infix: true,
       },
-      where: { StreamerID: streamerID }
+      where: { Stream: { StreamerID: streamerID } },
     });
     return resource;
   }
