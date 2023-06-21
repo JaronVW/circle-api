@@ -14,7 +14,6 @@ export class SatoshiController {
     private readonly logService: LogsService,
   ) {}
 
-  @Put(':id/:amount')
   @Get('stream/:streamid')
   @UseGuards(JwtAuthGuard)
   async getSatoshiIdByStreamId(@Param('streamid') id: string) {

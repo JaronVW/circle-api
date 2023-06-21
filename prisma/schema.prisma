@@ -49,6 +49,7 @@ model Log {
   LogID   Int    @id @default(autoincrement())
   UserID  Int
   LogText String @db.VarChar
+  DateTime DateTime @db.Date @default(now())
   User    User   @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "FK_UserID")
 }
 

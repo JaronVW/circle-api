@@ -13,6 +13,7 @@ export class NpmserverController {
   @Get('live/streams')
   @UseGuards(JwtAuthGuard)
   async getEndpoint(): Promise<any> {
+    console.log('request live');
     try {
       const data = await this.npmserverService.fetchData();
       const res = await this.npmserverService.getStreamersDataFeed(
