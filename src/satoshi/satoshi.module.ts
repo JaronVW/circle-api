@@ -11,6 +11,12 @@ import { LogsService } from 'src/logstable/logs.service';
 @Module({
   controllers: [SatoshiController],
   imports: [HttpModule, ConfigModule],
-  providers: [SatoshiService, PrismaService, DoublingService, VideoService, LogsService]
+  providers: [
+    SatoshiService,
+    PrismaService,
+    DoublingService,
+    VideoService,
+    LogsService,
+  ],
 })
 export class SatoshiModule {}

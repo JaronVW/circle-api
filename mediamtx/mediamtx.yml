@@ -442,7 +442,7 @@ paths:
     # * RTSP_PORT: server port
     # * G1, G2, ...: regular expression groups, if path name is
     #   a regular expression.
-    runOnReady: ffmpeg -i rtsp://localhost:$RTSP_PORT/$RTSP_PATH -c copy -f segment -strftime 1 -segment_time 60 -segment_format mpegts video/saved_%Y-%m-%d_%H-%M-%S.ts
+    runOnReady: ffmpeg -i rtsp://localhost:$RTSP_PORT/$RTSP_PATH -c copy -f segment -strftime 1 -segment_time 60 -segment_format mpegts video/saved_%Y-%m-%d_%H-%M-%S.mp4
     runOnReadyRestart: yes
 
     # Command to run when a clients starts reading.

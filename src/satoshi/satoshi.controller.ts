@@ -7,14 +7,19 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('satoshi')
 export class SatoshiController {
-  constructor(private readonly satoshiService: SatoshiService, private readonly prismaService: PrismaService,
-    private readonly doublingService: DoublingService, private readonly logService: LogsService) {}
+  constructor(
+    private readonly satoshiService: SatoshiService,
+    private readonly prismaService: PrismaService,
+    private readonly doublingService: DoublingService,
+    private readonly logService: LogsService,
+  ) {}
 
+  @Put(':id/:amount')
   @Get('stream/:streamid')
   @UseGuards(JwtAuthGuard)
   async getSatoshiIdByStreamId(@Param('streamid') id: string) {
     const user = await this.prismaService.user.findFirst({
-      where: { StreamID: id },
+      where: { Stream: { StreamID: id } },
       select: { UserID: true },
     });
     if (!user) {
@@ -29,11 +34,14 @@ export class SatoshiController {
 
   @Put(':id/:amount')
   @UseGuards(JwtAuthGuard)
-  async createAddMoney(@Param('id') id: number, @Param('amount') hours: number): Promise<any> {
+  async createAddMoney(
+    @Param('id') id: number,
+    @Param('amount') hours: number,
+  ): Promise<any> {
     return this.prismaService.$transaction(async (prisma) => {
       const account = await this.getAmountMoney(id);
       if (!account) {
-        throw new Error("No account with that ID!");
+        throw new Error('No account with that ID!');
       }
       const start = Number(account.Amount);
       const newAmount = this.doublingService.doubleNumberNTimes(start, hours);
@@ -66,13 +74,13 @@ export class SatoshiController {
   async getAmountMoney(@Param('id') id: number) {
     const resourceId = Number(id);
     if (isNaN(resourceId)) {
-      throw new Error("Invalid ID provided");
+      throw new Error('Invalid ID provided');
     }
     const resource = await this.prismaService.satoshi.findUnique({
       where: { SatoshiAccountID: resourceId },
     });
     if (!resource) {
-      throw new Error("Resource not found");
+      throw new Error('Resource not found');
     }
     return resource;
   }
